@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 일반 사용자는 로그인 없이 닉네임+비밀번호로 글/댓글을 작성하고, 같은 비밀번호로 수정·삭제한다.
@@ -34,7 +35,7 @@ public class PostController {
                       @NotBlank @Size(max = 20000) String content, @NotBlank @Size(max = 30) String author,
                       @Size(min = 4, max = 50) String password, Boolean pinned) {}
     record PostUpdate(@NotBlank @Size(max = 150) String title, @NotBlank @Size(max = 20000) String content,
-                      String password, Boolean pinned) {}
+                      @Size(min = 4, max = 50) String password, Boolean pinned) {}
     record CommentCreate(@NotBlank @Size(max = 30) String author, @Size(min = 4, max = 50) String password,
                          @NotBlank @Size(max = 1000) String content) {}
 
@@ -79,7 +80,7 @@ public class PostController {
         Post p = new Post();
         p.setCategory(r.category()); p.setTitle(r.title().trim()); p.setContent(r.content());
         p.setAuthor(admin ? "관리자" : r.author().trim());
-        p.setPasswordHash(encoder.encode(admin ? "" : r.password()));
+        p.setPasswordHash(encoder.encode(admin ? UUID.randomUUID().toString() : r.password()));
         p.setPinned(admin && Boolean.TRUE.equals(r.pinned()));
         return Map.of("id", posts.save(p).getId());
     }
@@ -112,7 +113,7 @@ public class PostController {
         Comment c = new Comment();
         c.setPost(find(id));
         c.setAuthor(admin ? "관리자" : r.author().trim());
-        c.setPasswordHash(encoder.encode(admin ? "" : r.password()));
+        c.setPasswordHash(encoder.encode(admin ? UUID.randomUUID().toString() : r.password()));
         c.setContent(r.content());
         c = comments.save(c);
         return new CommentView(c.getId(), c.getAuthor(), c.getContent(), c.getCreatedAt());
@@ -138,7 +139,7 @@ public class PostController {
 
     private void authorize(Authentication auth, String rawPassword, String hash) {
         if (isAdmin(auth)) return;
-        if (rawPassword == null || !encoder.matches(rawPassword, hash))
+        if (rawPassword == null || rawPassword.isBlank() || hash == null || !encoder.matches(rawPassword, hash))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다.");
     }
 }
