@@ -1,53 +1,10 @@
-import { useEffect, useState } from 'react'
-import { site, nav, hero, intro, research, programs, faculty, admission } from './content.js'
-import { useReveal } from './useReveal.js'
-
-function Reveal({ as: Tag = 'div', delay = 0, className = '', children, ...rest }) {
-  const [ref, shown] = useReveal()
-  return (
-    <Tag
-      ref={ref}
-      className={`reveal ${shown ? 'is-in' : ''} ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
-      {...rest}
-    >
-      {children}
-    </Tag>
-  )
-}
-
-function Header() {
-  const [scrolled, setScrolled] = useState(false)
-  const [open, setOpen] = useState(false)
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-  return (
-    <header className={`head ${scrolled ? 'is-solid' : ''} ${open ? 'is-open' : ''}`}>
-      <div className="inner head__row">
-        <a href="#top" className="logo">
-          <span className="logo__mark" />
-          <span>{site.name}</span>
-        </a>
-        <nav className="pcNav">
-          {nav.map((n) => (
-            <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)}>
-              {n.label}
-            </a>
-          ))}
-        </nav>
-        <button className="burger" aria-label="메뉴" onClick={() => setOpen((v) => !v)}>
-          <i /><i />
-        </button>
-      </div>
-    </header>
-  )
-}
+import { Link } from 'react-router-dom'
+import { useSite } from '../SiteContext.jsx'
+import { Reveal } from '../Reveal.jsx'
+import { Photo } from '../Photo.jsx'
 
 function Hero() {
+  const { hero } = useSite()
   return (
     <section className="hero" id="top">
       <div className="hero__bg" aria-hidden="true">
@@ -65,8 +22,8 @@ function Hero() {
         </h1>
         <p className="hero__sub hero__in" style={{ '--d': '500ms' }}>{hero.sub}</p>
         <div className="hero__cta hero__in" style={{ '--d': '650ms' }}>
-          <a href="#admission" className="btn btn--primary">입학 안내</a>
-          <a href="#research" className="btn btn--ghost">연구 분야 보기</a>
+          <Link to="/#admission" className="btn btn--primary">입학 안내</Link>
+          <Link to="/#research" className="btn btn--ghost">연구 분야 보기</Link>
         </div>
       </div>
       <div className="scrollHint"><span>Scroll</span><i /></div>
@@ -75,6 +32,7 @@ function Hero() {
 }
 
 function About() {
+  const { intro } = useSite()
   return (
     <section className="sec" id="about">
       <div className="inner about">
@@ -101,6 +59,7 @@ function About() {
 }
 
 function Research() {
+  const { research } = useSite()
   return (
     <section className="sec sec--gray" id="research">
       <div className="inner">
@@ -121,6 +80,7 @@ function Research() {
 }
 
 function Programs() {
+  const { programs } = useSite()
   return (
     <section className="sec" id="programs">
       <div className="inner">
@@ -132,7 +92,7 @@ function Programs() {
               <h3>{p.title}</h3>
               <p className="card__en font-inter">{p.en}</p>
               <p className="card__text">{p.text}</p>
-              <a href="#admission" className="more">바로가기 <i>→</i></a>
+              <Link to="/#admission" className="more">바로가기 <i>→</i></Link>
             </Reveal>
           ))}
         </div>
@@ -142,25 +102,30 @@ function Programs() {
 }
 
 function Faculty() {
+  const { members } = useSite()
+  const profs = members.filter((m) => m.role === 'PROFESSOR')
+  if (!profs.length) return null
   return (
     <section className="sec sec--dark" id="faculty">
       <div className="inner">
         <Reveal><h2 className="containerTitle font-inter">Faculty</h2></Reveal>
         <div className="faculty">
-          {faculty.map((f, i) => (
-            <Reveal key={f.name} delay={i * 100} className="person">
-              <div className="person__photo" aria-hidden="true">{f.name[0]}</div>
-              <h3>{f.name} <small>{f.role}</small></h3>
+          {profs.slice(0, 8).map((f, i) => (
+            <Reveal key={f.id} delay={i * 100} className="person">
+              <Photo m={f} />
+              <h3>{f.name} <small>{f.title}</small></h3>
               <p>{f.field}</p>
             </Reveal>
           ))}
         </div>
+        <Reveal className="allLink"><Link to="/members" className="more">전체 구성원 보기 <i>→</i></Link></Reveal>
       </div>
     </section>
   )
 }
 
 function Admission() {
+  const { admission, site } = useSite()
   return (
     <section className="sec" id="admission">
       <div className="inner">
@@ -187,37 +152,16 @@ function Admission() {
   )
 }
 
-function Footer() {
-  return (
-    <footer className="foot">
-      <div className="inner foot__row">
-        <div>
-          <strong>{site.school} {site.name}</strong>
-          <p>{site.address}</p>
-        </div>
-        <div>
-          <p>T. {site.tel}</p>
-          <p>E. {site.email}</p>
-        </div>
-      </div>
-      <p className="inner copy">© {new Date().getFullYear()} {site.school} {site.nameEn}. All rights reserved.</p>
-    </footer>
-  )
-}
 
-export default function App() {
+export default function Home() {
   return (
     <>
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <Research />
-        <Programs />
-        <Faculty />
-        <Admission />
-      </main>
-      <Footer />
+      <Hero />
+      <About />
+      <Research />
+      <Programs />
+      <Faculty />
+      <Admission />
     </>
   )
 }

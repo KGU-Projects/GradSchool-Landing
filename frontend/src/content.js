@@ -9,11 +9,12 @@ export const site = {
 }
 
 export const nav = [
-  { id: 'about', label: 'About' },
-  { id: 'research', label: 'Research' },
-  { id: 'programs', label: 'Programs' },
-  { id: 'faculty', label: 'Faculty' },
-  { id: 'admission', label: 'Admission' },
+  { to: '/#about', label: 'About' },
+  { to: '/#research', label: 'Research' },
+  { to: '/#programs', label: 'Programs' },
+  { to: '/members', label: 'Members' },
+  { to: '/board', label: 'Community' },
+  { to: '/#admission', label: 'Admission' },
 ]
 
 export const hero = {
@@ -45,13 +46,6 @@ export const programs = [
   { title: '박사과정', en: 'Ph.D.', text: '3년 · 6학기', tag: 'Ph.D.' },
   { title: '석·박사 통합과정', en: 'Integrated', text: '5년 · 10학기', tag: 'M.S./Ph.D.' },
   { title: '산업체 위탁과정', en: 'Industry Program', text: '재직자 대상 · 야간', tag: 'Part-time' },
-]
-
-export const faculty = [
-  { name: '홍길동', role: '교수', field: '생산시스템 · 스마트 제조' },
-  { name: '김철수', role: '교수', field: '데이터 분석 · 품질공학' },
-  { name: '이영희', role: '부교수', field: '공급망 · 물류 최적화' },
-  { name: '박민수', role: '조교수', field: '경영과학 · 인공지능' },
 ]
 
 export const admission = {

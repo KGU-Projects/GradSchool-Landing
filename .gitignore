@@ -22,3 +22,22 @@ sketch
 
 *.env
 dist/
+
+# --- backend (Spring Boot) ---
+backend/target/
+backend/data/
+backend/uploads/
+*.mv.db
+*.trace.db
+.env
+.env.*
+!.env.example
+
+# --- frontend (Vite) ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+.idea/
+.DS_Store
+backend/build/
+backend/.gradle/
