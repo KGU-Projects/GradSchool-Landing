@@ -56,3 +56,16 @@ export const admission = {
     { label: '합격자 발표', date: '0000.00.00' },
   ],
 }
+
+// 더미 구성원 — 서버(/api/members)가 없거나 비어 있을 때 표시됩니다.
+export const members = [
+  { id: 1, role: 'PROFESSOR', name: '김민수', title: '교수', field: '스마트 제조 · 생산 스케줄링', office: '공학관 301호', email: 'kim@example.ac.kr', phone: '000-0000-0001', bio: '(더미) 생산 시스템 최적화와 스마트 팩토리를 연구합니다.' },
+  { id: 2, role: 'PROFESSOR', name: '이서연', title: '교수', field: '데이터 분석 · 품질 AI', office: '공학관 302호', email: 'lee@example.ac.kr', phone: '000-0000-0002', bio: '(더미) 산업 데이터 기반 예측 모델링을 연구합니다.' },
+  { id: 3, role: 'PROFESSOR', name: '박지훈', title: '부교수', field: '공급망 · 물류 최적화', office: '공학관 303호', email: 'park@example.ac.kr', phone: '000-0000-0003', bio: '(더미) 공급망 설계와 재고 정책을 연구합니다.' },
+  { id: 4, role: 'PROFESSOR', name: '최유진', title: '조교수', field: '경영과학 · 서비스 운영', office: '공학관 304호', email: 'choi@example.ac.kr', phone: '000-0000-0004', bio: '(더미) 서비스 운영과 기술경영을 연구합니다.' },
+  { id: 5, role: 'PHD', name: '정하늘', title: '박사과정', field: '설비 이상 탐지' },
+  { id: 6, role: 'PHD', name: '강도윤', title: '박사과정', field: '강화학습 기반 스케줄링' },
+  { id: 7, role: 'MASTER', name: '윤서아', title: '석사과정', field: '수요 예측' },
+  { id: 8, role: 'MASTER', name: '한지호', title: '석사과정', field: '물류 네트워크 설계' },
+  { id: 9, role: 'ALUMNI', name: '오세린', title: '2024 졸업', field: '○○전자 생산기술' },
+]

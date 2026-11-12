@@ -8,12 +8,12 @@ export const useSite = () => useContext(Ctx)
 // 서버에 저장된 섹션이 있으면 기본값(content.js) 위에 덮어쓴다. 서버가 꺼져 있어도 기본값으로 렌더링된다.
 export function SiteProvider({ children }) {
   const [remote, setRemote] = useState({})
-  const [members, setMembers] = useState([])
+  const [members, setMembers] = useState(defaults.members)
   const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
     api('/content').then(setRemote).catch(() => {})
-    api('/members').then(setMembers).catch(() => {})
+    api('/members').then((m) => m?.length && setMembers(m)).catch(() => {})
   }, [reloadKey])
 
   const value = useMemo(() => {

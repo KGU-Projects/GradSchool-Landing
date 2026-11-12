@@ -1,28 +1,36 @@
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useSite } from '../SiteContext.jsx'
 import { Reveal } from '../Reveal.jsx'
 import { Photo } from '../Photo.jsx'
+import Machine from '../Machine.jsx'
+import { useHeroMotion, useMagnetic, useStatScramble, useStepsLine } from '../motion.js'
 
 function Hero() {
   const { hero } = useSite()
+  const ref = useRef(null)
+  useHeroMotion(ref)
   return (
-    <section className="hero" id="top">
+    <section className="hero" id="top" ref={ref}>
       <div className="hero__bg" aria-hidden="true">
         <span className="grid" />
-        <span className="orb" />
+        <span className="grid grid--lit" />
+        <span className="orbPos"><span className="orb" /></span>
+        <span className="hero__spot" />
       </div>
+      <div className="machine" aria-hidden="true"><Machine /></div>
       <div className="inner hero__body">
         <p className="eyebrow hero__in" style={{ '--d': '0ms' }}>{hero.eyebrow}</p>
         <h1 className="font-inter">
-          {hero.title.map((t, i) => (
-            <span key={t} className="hero__line hero__in" style={{ '--d': `${150 + i * 150}ms` }}>
+          {hero.title.map((t) => (
+            <span key={t} className="hero__line">
               {t}
             </span>
           ))}
         </h1>
         <p className="hero__sub hero__in" style={{ '--d': '500ms' }}>{hero.sub}</p>
         <div className="hero__cta hero__in" style={{ '--d': '650ms' }}>
-          <Link to="/#admission" className="btn btn--primary">입학 안내</Link>
+          <Link to="/#admission" className="btn btn--primary btn--mag">입학 안내</Link>
           <Link to="/#research" className="btn btn--ghost">연구 분야 보기</Link>
         </div>
       </div>
@@ -33,6 +41,8 @@ function Hero() {
 
 function About() {
   const { intro } = useSite()
+  const statsRef = useRef(null)
+  useStatScramble(statsRef)
   return (
     <section className="sec" id="about">
       <div className="inner about">
@@ -46,10 +56,10 @@ function About() {
           <p className="lead">{intro.text}</p>
         </Reveal>
       </div>
-      <div className="inner stats">
+      <div className="inner stats" ref={statsRef}>
         {intro.stats.map((s, i) => (
           <Reveal key={s.label} delay={i * 100} className="stat">
-            <strong className="font-inter">{s.value}<small>{s.unit}</small></strong>
+            <strong className="font-inter"><span data-scramble>{s.value}</span><small>{s.unit}</small></strong>
             <span>{s.label}</span>
           </Reveal>
         ))}
@@ -126,10 +136,17 @@ function Faculty() {
 
 function Admission() {
   const { admission, site } = useSite()
+  const stepsRef = useRef(null)
+  useStepsLine(stepsRef)
   return (
     <section className="sec" id="admission">
       <div className="inner">
         <Reveal><h2 className="containerTitle font-inter">Admission</h2></Reveal>
+        <div className="steps__wrap" ref={stepsRef}>
+          <svg className="steps__svg" viewBox="0 0 100 2" preserveAspectRatio="none" aria-hidden="true">
+            <path className="steps__track" d="M0 1 H100" />
+            <path className="steps__fill" d="M0 1 H100" />
+          </svg>
         <ol className="steps">
           {admission.steps.map((s, i) => (
             <Reveal as="li" key={s} delay={i * 100}>
@@ -138,6 +155,7 @@ function Admission() {
             </Reveal>
           ))}
         </ol>
+        </div>
         <Reveal className="schedule">
           {admission.schedule.map((s) => (
             <div key={s.label}><b>{s.label}</b><span>{s.date}</span></div>
@@ -145,7 +163,7 @@ function Admission() {
         </Reveal>
         <Reveal className="cta">
           <h3 className="font-inter">Start Your Journey<br />with Us.</h3>
-          <a className="btn btn--primary" href={`mailto:${site.email}`}>입학 문의하기</a>
+          <a className="btn btn--primary btn--mag" href={`mailto:${site.email}`}>입학 문의하기</a>
         </Reveal>
       </div>
     </section>
@@ -154,6 +172,7 @@ function Admission() {
 
 
 export default function Home() {
+  useMagnetic()
   return (
     <>
       <Hero />
