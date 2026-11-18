@@ -30,10 +30,16 @@ cd frontend && npm install && npm run dev
 | `JWT_SECRET` | JWT 서명 키 (32자 이상) | 개발용 값 — **운영에서 반드시 교체** |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD` | 관리자 계정이 없을 때만 최초 생성 | admin / admin1234 |
 | `CORS_ORIGINS` | 허용 프론트 도메인(쉼표 구분) | http://localhost:5173 |
-| `UPLOAD_DIR` | 업로드 이미지 저장 경로 | ./uploads |
 
-## 배포 메모
-- 프론트(Vercel): Root Directory `frontend`, Framework `Vite`. API 서버는 별도 호스팅이 필요하며,
-  `frontend/vercel.json`의 rewrites에 `{ "source": "/api/:path*", "destination": "https://<백엔드 주소>/api/:path*" }`,
-  `/uploads/:path*` 도 같은 방식으로 추가하세요.
-- 백엔드: `./gradlew bootJar` → `build/libs/backend-0.0.1.jar`
+## 배포 (무료 구성: Vercel + Render + Neon)
+1. **DB (Neon)**: 프로젝트 생성 후 접속 정보를 `DB_URL=jdbc:postgresql://<host>/<db>?sslmode=require`, `DB_USERNAME`, `DB_PASSWORD` 로 준비.
+2. **백엔드 (Render)**: New → Web Service → 이 저장소 연결, Language `Docker`, Root Directory `backend`, Instance Type `Free`.
+   환경변수: `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`(32자 이상 랜덤), `ADMIN_USERNAME`, `ADMIN_PASSWORD`,
+   `CORS_ORIGINS`(Vercel 도메인). Health Check Path 는 `/api/members` 로 지정.
+3. **프론트 (Vercel)**: `frontend/vercel.json` 의 `REPLACE-WITH-YOUR-SERVICE.onrender.com` 을 Render 주소로 교체 후 push.
+   (`/api`, `/uploads` 요청이 백엔드로 프록시되어 CORS 없이 동작)
+4. **슬립 방지**: Render 무료 서비스는 15분 무요청 시 슬립(첫 요청 40~60초). UptimeRobot 으로
+   `https://<render 주소>/api/members` 를 5~10분마다 호출하면 깨어 있습니다.
+
+- 업로드 이미지는 DB(`uploaded_file`)에 저장됩니다 (디스크가 휘발성인 무료 호스팅 대응, 파일당 5MB 제한).
+- 백엔드 jar 빌드: `./gradlew bootJar` → `build/libs/backend-0.0.1.jar`

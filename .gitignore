@@ -41,3 +41,4 @@ frontend/.vite/
 .DS_Store
 backend/build/
 backend/.gradle/
+backend/bin/
