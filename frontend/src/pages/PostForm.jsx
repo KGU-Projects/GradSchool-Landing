@@ -28,10 +28,10 @@ export default function PostForm() {
     setErr('')
     try {
       if (editing) {
-        await api(`/posts/${id}`, { method: 'PUT', body: { title: f.title, content: f.content, password: state.password, pinned: f.pinned } })
+        await api(`/posts/${id}`, { method: 'PUT', body: { title: f.title, content: f.content, password: state.password || undefined, pinned: f.pinned } })
         nav(`/board/${id}`)
       } else {
-        const r = await api('/posts', { method: 'POST', body: { ...f, author: f.author || '관리자' } })
+        const r = await api('/posts', { method: 'POST', body: { ...f, password: f.password || undefined, author: f.author || '관리자' } })
         nav(`/board/${r.id}`)
       }
     } catch (e2) { setErr(e2.message) }

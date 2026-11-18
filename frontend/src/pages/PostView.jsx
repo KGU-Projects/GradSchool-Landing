@@ -38,7 +38,7 @@ export default function PostView() {
   const addComment = async (e) => {
     e.preventDefault()
     try {
-      await api(`/posts/${id}/comments`, { method: 'POST', body: c })
+      await api(`/posts/${id}/comments`, { method: 'POST', body: { ...c, password: c.password || undefined } })
       setC({ author: '', password: '', content: '' }); load()
     } catch (err) { alert(err.message) }
   }
