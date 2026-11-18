@@ -27,5 +27,7 @@ export async function api(path, { method = 'GET', body, headers = {}, form } = {
     err.status = res.status
     throw err
   }
-  return res.status === 204 ? null : res.json()
+  // 본문이 없는 성공 응답(204, 빈 200)은 null 로 처리
+  const text = res.status === 204 ? '' : await res.text()
+  return text ? JSON.parse(text) : null
 }
