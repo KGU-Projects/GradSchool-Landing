@@ -11,7 +11,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("""
         select p from Post p
         where (:category is null or p.category = :category)
-          and (:q is null or lower(p.title) like lower(concat('%', :q, '%'))
+          and (:q = '' or lower(p.title) like lower(concat('%', :q, '%'))
                           or lower(p.content) like lower(concat('%', :q, '%')))
         order by p.pinned desc, p.id desc
         """)

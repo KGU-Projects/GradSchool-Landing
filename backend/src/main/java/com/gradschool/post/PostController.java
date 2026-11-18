@@ -53,7 +53,8 @@ public class PostController {
                                   @RequestParam(required = false) String q,
                                   @RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "10") int size) {
-        String query = (q == null || q.isBlank()) ? null : q.trim();
+        // null 파라미터는 PostgreSQL 에서 bytea 로 추론되어 lower() 가 실패하므로 빈 문자열을 쓴다
+        String query = (q == null || q.isBlank()) ? "" : q.trim();
         return posts.search(category, query, PageRequest.of(Math.max(page, 0), Math.min(Math.max(size, 1), 50)))
                 .map(p -> new PostSummary(p.getId(), p.getCategory(), p.getTitle(), p.getAuthor(), p.isPinned(),
                         p.getViewCount(), comments.countByPostId(p.getId()), p.getCreatedAt()));
